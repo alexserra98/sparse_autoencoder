@@ -46,29 +46,48 @@ class Parser:
     """
     def __init__(self):
         self.parser = argparse.ArgumentParser()
-        self.parser.add_argument('--model_name', type=str, default='gpt2')
-        self.parser.add_argument('--device', type=str, default='cuda')
-        self.parser.add_argument('--dataset_name', type=str, default='wikitext-2')
-        self.parser.add_argument('--max_items', type=int, default=1000)
-        self.parser.add_argument('--total_training_tokens', type=int, default=1000000)
+        self.default_ = {
+            "model": "gpt2",
+            "device": "cuda",
+            "dataset": "wikitext-2",
+            "max_items": 1000,
+            "total_training_tokens": 1000000,
+        }
+        self.argument = {
+            "model": self.parser.add_argument('--model_name', type=str, default=self.default_["model"]),
+            "device": self.parser.add_argument('--device', type=str, default=self.default_["device"]),
+            "dataset": self.parser.add_argument('--dataset_name', type=str, default=self.default_["dataset"]),
+            "max_items":self.parser.add_argument('--max_items', type=int, default=self.default_["max_items"]),
+            "total_training_tokens": self.parser.add_argument('--total_training_tokens', type=int, default=self.default_["total_training_tokens"])
+        }
+
         
     @classmethod
-    def get_config(cls) -> tuple[Config, DataConfig, TrainerConfig]:
+    def get_config(cls, **kwargs) -> tuple[Config, DataConfig, TrainerConfig]:
         """Get the config from the parsed arguments."""
         parser = cls()
-        return parser.parse_and_configure()
+        return parser.parse_and_configure(**kwargs)
     
-    def add_argument(self, *args, **kwargs) -> None:
-        """Add an argument to the parser."""
-        self.parser.add_argument(*args, **kwargs)
-        
-    def parse_args(self) -> argparse.Namespace:
-        """Parse the arguments."""
-        return self.parser.parse_args()
     
-    def parse_and_configure(self) -> tuple[Config, DataConfig, TrainerConfig]:
+    @property
+    def default(self) -> dict:
+        """Get the default arguments."""
+        return self.default_
+    
+    @default.setter
+    def default(self, default__:dict) -> None:
+        # overwrite the default arguments if the keys are the same
+        self.default_.update({k: v for k, v in default__.items() if k in self.default_.keys()})
+        # update the parser with the new default arguments
+        for k, v in self.argument.items():
+            v.default = self.default_[k]
+                
+    def parse_and_configure(self, notebook:bool=False) -> tuple[Config, DataConfig, TrainerConfig]:
         """Get the config from the parsed arguments."""
-        args = self.parse_args()
+        if notebook:
+            args = self.parser.parse_args("")
+        else:
+            args = self.parser.parse_args()
         return Config(args.model_name, args.device), DataConfig(args.dataset_name, args.max_items, args.total_training_tokens), TrainerConfig()
 
 
@@ -85,11 +104,6 @@ class Activation(ABC):
         
     @abstractmethod
     def set_dimensionality(self,  model:HookedTransformer) -> None:
-        pass
-    
-    @abstractmethod
-    @classmethod
-    def get_name(cls) -> str:
         pass
         
 class HeadActivation(Activation):
@@ -166,6 +180,10 @@ class Trainer:
         self.tokenizer: PreTrainedTokenizerBase =  self.model.tokenizer # type: ignore
         self.source_data = GenericTextDataset(tokenizer=self.tokenizer, dataset_path=data_config.dataset_name) # type: ignore
         
+    @classmethod
+    def from_parser(cls, parser:Parser, **kwargs):
+        config, data_config, trainer_config = parser.parse_and_configure(**kwargs)
+        return cls(config, data_config, trainer_config)
     
     def init_autoencoder(self, activation:Activation):
         """
