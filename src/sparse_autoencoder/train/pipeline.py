@@ -9,18 +9,21 @@ from tqdm.auto import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 from transformer_lens import HookedTransformer
 
-from sparse_autoencoder.activation_store.base_store import ActivationStore
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.optimizer.adam_with_reset import AdamWithReset
-from sparse_autoencoder.source_data.abstract_dataset import SourceDataset, TorchTokenizedPrompts
-from sparse_autoencoder.train.generate_activations import generate_activations
-from sparse_autoencoder.train.resample_neurons import resample_dead_neurons
-from sparse_autoencoder.train.sweep_config import SweepParametersRuntime
-from sparse_autoencoder.train.train_autoencoder import train_autoencoder
+from src.sparse_autoencoder.activation_store.base_store import ActivationStore
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.optimizer.adam_with_reset import AdamWithReset
+from src.sparse_autoencoder.source_data.abstract_dataset import (
+    SourceDataset,
+    TorchTokenizedPrompts,
+)
+from src.sparse_autoencoder.train.generate_activations import generate_activations
+from src.sparse_autoencoder.train.resample_neurons import resample_dead_neurons
+from src.sparse_autoencoder.train.sweep_config import SweepParametersRuntime
+from src.sparse_autoencoder.train.train_autoencoder import train_autoencoder
 
 
 if TYPE_CHECKING:
-    from sparse_autoencoder.tensor_types import NeuronActivity
+    from src.sparse_autoencoder.tensor_types import NeuronActivity
 
 DEFAULT_RESAMPLE_N = 819_200
 

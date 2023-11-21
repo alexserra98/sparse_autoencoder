@@ -3,8 +3,8 @@ from typing import final
 
 from torch.nn.functional import mse_loss
 
-from sparse_autoencoder.loss.abstract_loss import AbstractLoss
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.loss.abstract_loss import AbstractLoss
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     LearnedActivationBatch,
     TrainBatchStatistic,
@@ -49,7 +49,9 @@ class MSEReconstructionLoss(AbstractLoss):
         Returns:
             Loss per batch item.
         """
-        square_error_loss = mse_loss(source_activations, decoded_activations, reduction="none")
+        square_error_loss = mse_loss(
+            source_activations, decoded_activations, reduction="none"
+        )
 
         # Mean over just the features dimension (i.e. batch itemwise loss)
         return square_error_loss.mean(dim=-1)

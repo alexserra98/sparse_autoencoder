@@ -2,7 +2,7 @@
 
 import torch
 
-from sparse_autoencoder.train.metrics.feature_density import (
+from src.sparse_autoencoder.train.metrics.feature_density import (
     calc_feature_density,
     wandb_feature_density_histogram,
 )
@@ -15,7 +15,9 @@ def test_calc_feature_density() -> None:
     # Use different approach to check
     threshold = 0.01
     above_threshold = activations > threshold
-    expected = above_threshold.sum(dim=0, dtype=torch.float64) / above_threshold.shape[0]
+    expected = (
+        above_threshold.sum(dim=0, dtype=torch.float64) / above_threshold.shape[0]
+    )
 
     res = calc_feature_density(activations)
     assert torch.allclose(res, expected), "Output does not match the expected result."

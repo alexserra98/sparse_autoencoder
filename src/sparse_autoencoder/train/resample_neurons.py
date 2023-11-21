@@ -8,12 +8,12 @@ import torch
 from torch import Tensor
 from torch.utils.data import DataLoader
 
-from sparse_autoencoder.activation_store.base_store import ActivationStore
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
-from sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
-from sparse_autoencoder.loss.reducer import LossReducer
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.activation_store.base_store import ActivationStore
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+from src.sparse_autoencoder.loss.reducer import LossReducer
+from src.sparse_autoencoder.tensor_types import (
     AliveEncoderWeights,
     DeadEncoderNeuronWeightUpdates,
     DeadNeuronIndices,
@@ -26,11 +26,13 @@ from sparse_autoencoder.tensor_types import (
     SampledDeadNeuronInputs,
     TrainBatchStatistic,
 )
-from sparse_autoencoder.train.sweep_config import SweepParametersRuntime
+from src.sparse_autoencoder.train.sweep_config import SweepParametersRuntime
 
 
 if TYPE_CHECKING:
-    from sparse_autoencoder.autoencoder.components.unit_norm_linear import ConstrainedUnitNormLinear
+    from src.sparse_autoencoder.autoencoder.components.unit_norm_linear import (
+        ConstrainedUnitNormLinear,
+    )
 
 
 def get_dead_neuron_indices(
@@ -89,7 +91,9 @@ def compute_loss_and_get_activations(
         for batch_idx, batch in enumerate(iter(dataloader)):
             input_activations_batches.append(batch)
             learned_activations, reconstructed_activations = autoencoder(batch)
-            loss_batches.append(loss.forward(batch, learned_activations, reconstructed_activations))
+            loss_batches.append(
+                loss.forward(batch, learned_activations, reconstructed_activations)
+            )
             if batch_idx >= batches:
                 break
 
@@ -98,9 +102,7 @@ def compute_loss_and_get_activations(
 
         # Check we generated enough data
         if len(loss) < num_inputs:
-            error_message = (
-                f"Cannot get {num_inputs} items from the store, as only {len(loss)} were available."
-            )
+            error_message = f"Cannot get {num_inputs} items from the store, as only {len(loss)} were available."
             raise ValueError(error_message)
 
         return loss, input_activations
@@ -154,9 +156,7 @@ def sample_input(
         ValueError: If the number of samples is greater than the number of input activations.
     """
     if num_samples > len(input_activations):
-        exception_message = (
-            f"Cannot sample {num_samples} inputs from {len(input_activations)} input activations."
-        )
+        exception_message = f"Cannot sample {num_samples} inputs from {len(input_activations)} input activations."
         raise ValueError(exception_message)
 
     if num_samples == 0:
@@ -166,7 +166,9 @@ def sample_input(
             device=input_activations.device,
         )
 
-    sample_indices: DeadNeuronIndices = torch.multinomial(probabilities, num_samples=num_samples)
+    sample_indices: DeadNeuronIndices = torch.multinomial(
+        probabilities, num_samples=num_samples
+    )
     return input_activations[sample_indices, :]
 
 
@@ -210,7 +212,9 @@ def renormalize_and_scale(
     # Handle all alive neurons
     if torch.all(alive_neuron_mask):
         return torch.empty(
-            (0, sampled_input.shape[-1]), dtype=sampled_input.dtype, device=sampled_input.device
+            (0, sampled_input.shape[-1]),
+            dtype=sampled_input.dtype,
+            device=sampled_input.device,
         )
 
     # Calculate the average norm of the encoder weights for alive neurons.

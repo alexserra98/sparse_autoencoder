@@ -5,20 +5,22 @@ from typing import final
 from tqdm.auto import tqdm
 from transformer_lens import HookedTransformer
 
-from sparse_autoencoder.activation_resampler.abstract_activation_resampler import (
+from src.sparse_autoencoder.activation_resampler.abstract_activation_resampler import (
     AbstractActivationResampler,
 )
-from sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.loss.abstract_loss import AbstractLoss
-from sparse_autoencoder.metrics.abstract_metric import (
+from src.sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.loss.abstract_loss import AbstractLoss
+from src.sparse_autoencoder.metrics.abstract_metric import (
     AbstractGenerateMetric,
     AbstractTrainMetric,
     AbstractValidationMetric,
 )
-from sparse_autoencoder.optimizer.abstract_optimizer import AbstractOptimizerWithReset
-from sparse_autoencoder.source_data.abstract_dataset import SourceDataset
-from sparse_autoencoder.tensor_types import NeuronActivity
+from src.sparse_autoencoder.optimizer.abstract_optimizer import (
+    AbstractOptimizerWithReset,
+)
+from src.sparse_autoencoder.source_data.abstract_dataset import SourceDataset
+from src.sparse_autoencoder.tensor_types import NeuronActivity
 
 
 class AbstractPipeline(ABC):
@@ -106,7 +108,9 @@ class AbstractPipeline(ABC):
         last_checkpoint: int = 0
         neuron_activity: NeuronActivity | None = None
 
-        for _ in tqdm(range(0, max_activations, source_batch_size), title="Activations trained on"):
+        for _ in tqdm(
+            range(0, max_activations, source_batch_size), title="Activations trained on"
+        ):
             # Generate
             activations: TensorActivationStore = self.generate_activations()
 

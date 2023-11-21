@@ -22,7 +22,10 @@ from typing import TypedDict, final
 
 from transformers import PreTrainedTokenizerBase
 
-from sparse_autoencoder.source_data.abstract_dataset import SourceDataset, TokenizedPrompts
+from src.sparse_autoencoder.source_data.abstract_dataset import (
+    SourceDataset,
+    TokenizedPrompts,
+)
 
 
 class GenericTextDataBatch(TypedDict):
@@ -32,7 +35,9 @@ class GenericTextDataBatch(TypedDict):
     """
 
     text: list[str]
-    meta: list[dict[str, dict[str, str]]]  # Optional, depending on the dataset structure.
+    meta: list[
+        dict[str, dict[str, str]]
+    ]  # Optional, depending on the dataset structure.
 
 
 @final

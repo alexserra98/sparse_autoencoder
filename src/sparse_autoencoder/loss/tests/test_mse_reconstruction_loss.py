@@ -2,7 +2,7 @@
 import pytest
 import torch
 
-from sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
 
 
 @pytest.fixture()
@@ -18,9 +18,13 @@ def test_mse_loss_forward(mse_loss: MSEReconstructionLoss) -> None:
     learned_activations = torch.zeros_like(input_activations)
 
     expected_loss = torch.tensor([8.5, 2.5])
-    calculated_loss = mse_loss.forward(input_activations, learned_activations, output_activations)
+    calculated_loss = mse_loss.forward(
+        input_activations, learned_activations, output_activations
+    )
 
-    assert torch.allclose(calculated_loss, expected_loss), "MSE loss calculation is incorrect."
+    assert torch.allclose(
+        calculated_loss, expected_loss
+    ), "MSE loss calculation is incorrect."
 
 
 def test_mse_loss_with_zero_input(mse_loss: MSEReconstructionLoss) -> None:
@@ -30,7 +34,9 @@ def test_mse_loss_with_zero_input(mse_loss: MSEReconstructionLoss) -> None:
     learned_activations = torch.zeros_like(input_activations)
 
     expected_loss = torch.zeros(2)
-    calculated_loss = mse_loss.forward(input_activations, learned_activations, output_activations)
+    calculated_loss = mse_loss.forward(
+        input_activations, learned_activations, output_activations
+    )
 
     assert torch.all(
         calculated_loss == expected_loss

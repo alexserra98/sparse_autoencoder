@@ -7,7 +7,10 @@ from numpy.typing import NDArray
 import torch
 import wandb
 
-from sparse_autoencoder.tensor_types import LearnedActivationBatch, LearntActivationVector
+from src.sparse_autoencoder.tensor_types import (
+    LearnedActivationBatch,
+    LearntActivationVector,
+)
 
 
 def calc_feature_density(

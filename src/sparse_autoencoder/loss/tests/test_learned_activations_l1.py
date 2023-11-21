@@ -2,7 +2,7 @@
 import pytest
 import torch
 
-from sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
 
 
 @pytest.fixture()
@@ -17,9 +17,13 @@ def test_l1_loss_forward(l1_loss: LearnedActivationsL1Loss) -> None:
     source_activations = decoded_activations = torch.zeros_like(learned_activations)
 
     expected_loss = torch.tensor([0.5, 0.5])  # (|2| + |-3|) * 0.1 for each row
-    calculated_loss = l1_loss.forward(source_activations, learned_activations, decoded_activations)
+    calculated_loss = l1_loss.forward(
+        source_activations, learned_activations, decoded_activations
+    )
 
-    assert torch.allclose(calculated_loss, expected_loss), "L1 loss calculation is incorrect."
+    assert torch.allclose(
+        calculated_loss, expected_loss
+    ), "L1 loss calculation is incorrect."
 
 
 def test_l1_loss_with_different_l1_coefficients() -> None:
@@ -45,9 +49,13 @@ def test_l1_loss_with_zero_input(l1_loss: LearnedActivationsL1Loss) -> None:
     source_activations = decoded_activations = torch.zeros_like(learned_activations)
 
     expected_loss = torch.zeros(2)
-    calculated_loss = l1_loss.forward(source_activations, learned_activations, decoded_activations)
+    calculated_loss = l1_loss.forward(
+        source_activations, learned_activations, decoded_activations
+    )
 
-    assert torch.all(calculated_loss == expected_loss), "L1 loss should be zero for zero inputs."
+    assert torch.all(
+        calculated_loss == expected_loss
+    ), "L1 loss should be zero for zero inputs."
 
 
 def test_l1_loss_with_negative_input(l1_loss: LearnedActivationsL1Loss) -> None:
@@ -56,7 +64,9 @@ def test_l1_loss_with_negative_input(l1_loss: LearnedActivationsL1Loss) -> None:
     source_activations = decoded_activations = torch.zeros_like(learned_activations)
 
     expected_loss = torch.tensor([0.5, 0.5])  # (|2| + |-3|) * 0.1 for each row
-    calculated_loss = l1_loss.forward(source_activations, learned_activations, decoded_activations)
+    calculated_loss = l1_loss.forward(
+        source_activations, learned_activations, decoded_activations
+    )
 
     assert torch.allclose(
         calculated_loss, expected_loss

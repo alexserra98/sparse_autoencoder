@@ -1,7 +1,7 @@
 """Resize Tensors for Extend Methods."""
 from einops import rearrange
 
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     InputOutputActivationVector,
     SourceModelActivations,

@@ -6,7 +6,7 @@ from datasets import IterableDataset, load_dataset
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset as TorchDataset
 
-from sparse_autoencoder.tensor_types import BatchTokenizedPrompts
+from src.sparse_autoencoder.tensor_types import BatchTokenizedPrompts
 
 
 TokenizedPrompt = list[int]
@@ -130,7 +130,9 @@ class SourceDataset(ABC, Generic[HuggingFaceDatasetItem]):
         self.context_size = context_size
 
         # Load the dataset
-        dataset: IterableDataset = load_dataset(dataset_path, streaming=True, split=dataset_split)  # type: ignore
+        dataset: IterableDataset = load_dataset(
+            dataset_path, streaming=True, split=dataset_split
+        )  # type: ignore
 
         # Setup preprocessing
         existing_columns: list[str] = list(next(iter(dataset)).keys())
@@ -173,7 +175,9 @@ class SourceDataset(ABC, Generic[HuggingFaceDatasetItem]):
         Returns:
             PyTorch DataLoader.
         """
-        torch_dataset: TorchDataset[TorchTokenizedPrompts] = self.dataset.with_format("torch")  # type: ignore
+        torch_dataset: TorchDataset[TorchTokenizedPrompts] = self.dataset.with_format(
+            "torch"
+        )  # type: ignore
 
         return DataLoader[TorchTokenizedPrompts](
             torch_dataset,

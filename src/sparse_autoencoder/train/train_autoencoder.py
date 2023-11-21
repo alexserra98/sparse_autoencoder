@@ -5,13 +5,13 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 import wandb
 
-from sparse_autoencoder.activation_store.base_store import ActivationStore
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
-from sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
-from sparse_autoencoder.loss.reducer import LossReducer
-from sparse_autoencoder.tensor_types import LearntActivationVector, NeuronActivity
-from sparse_autoencoder.train.sweep_config import SweepParametersRuntime
+from src.sparse_autoencoder.activation_store.base_store import ActivationStore
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+from src.sparse_autoencoder.loss.reducer import LossReducer
+from src.sparse_autoencoder.tensor_types import LearntActivationVector, NeuronActivity
+from src.sparse_autoencoder.train.sweep_config import SweepParametersRuntime
 
 
 def train_autoencoder(

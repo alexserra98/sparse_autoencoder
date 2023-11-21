@@ -13,7 +13,10 @@ PreTokenizedDataset should work with any of the following tokenized datasets:
 
 from typing import TypedDict, final
 
-from sparse_autoencoder.source_data.abstract_dataset import SourceDataset, TokenizedPrompts
+from src.sparse_autoencoder.source_data.abstract_dataset import (
+    SourceDataset,
+    TokenizedPrompts,
+)
 
 
 class PreTokenizedDataBatch(TypedDict):

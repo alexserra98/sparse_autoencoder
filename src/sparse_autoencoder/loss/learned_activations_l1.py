@@ -3,8 +3,8 @@ from typing import final
 
 import torch
 
-from sparse_autoencoder.loss.abstract_loss import AbstractLoss
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.loss.abstract_loss import AbstractLoss
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     LearnedActivationBatch,
     TrainBatchStatistic,

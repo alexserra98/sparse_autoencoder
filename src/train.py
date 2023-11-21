@@ -2,7 +2,7 @@ from ast import Tuple
 import stat
 
 import wandb
-from sparse_autoencoder import SparseAutoencoder, pipeline
+from src.sparse_autoencoder import SparseAutoencoder, pipeline
 from transformers import PreTrainedTokenizerBase
 
 from abc import ABC, abstractmethod, abstractproperty

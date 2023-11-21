@@ -6,7 +6,7 @@ from datasets import IterableDataset, load_dataset
 import pytest
 import torch
 
-from sparse_autoencoder.source_data.abstract_dataset import (
+from src.sparse_autoencoder.source_data.abstract_dataset import (
     SourceDataset,
     TokenizedPrompts,
 )
@@ -67,22 +67,30 @@ def mock_hugging_face_load_dataset(monkeypatch: pytest.MonkeyPatch) -> None:
         """Mock load dataset function."""
         mock_path = Path(__file__).parent / "mocks" / "text_dataset.txt"
         return load_dataset(
-            "text", data_files={"train": [str(mock_path)]}, streaming=True, split="train"
+            "text",
+            data_files={"train": [str(mock_path)]},
+            streaming=True,
+            split="train",
         )  # type: ignore
 
     monkeypatch.setattr(
-        "sparse_autoencoder.source_data.abstract_dataset.load_dataset", mock_load_dataset
+        "src.sparse_autoencoder.source_data.abstract_dataset.load_dataset",
+        mock_load_dataset,
     )
 
 
-def test_extended_dataset_initialization(mock_hugging_face_load_dataset: pytest.Function) -> None:
+def test_extended_dataset_initialization(
+    mock_hugging_face_load_dataset: pytest.Function
+) -> None:
     """Test the initialization of the extended dataset."""
     data = MockSourceDataset()
     assert data is not None
     assert isinstance(data, SourceDataset)
 
 
-def test_extended_dataset_iterator(mock_hugging_face_load_dataset: pytest.Function) -> None:
+def test_extended_dataset_iterator(
+    mock_hugging_face_load_dataset: pytest.Function
+) -> None:
     """Test the iterator of the extended dataset."""
     data = MockSourceDataset()
     iterator = iter(data)

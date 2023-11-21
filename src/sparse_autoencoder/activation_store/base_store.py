@@ -6,7 +6,7 @@ from typing import final
 import torch
 from torch.utils.data import Dataset
 
-from sparse_autoencoder.tensor_types import InputOutputActivationBatch, InputOutputActivationVector
+from src.sparse_autoencoder.tensor_types import InputOutputActivationBatch, InputOutputActivationVector
 
 
 class ActivationStore(Dataset[InputOutputActivationVector], ABC):

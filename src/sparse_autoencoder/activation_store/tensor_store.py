@@ -1,14 +1,14 @@
 """Tensor Activation Store."""
 import torch
 
-from sparse_autoencoder.activation_store.base_store import (
+from src.sparse_autoencoder.activation_store.base_store import (
     ActivationStore,
     StoreFullError,
 )
-from sparse_autoencoder.activation_store.utils.extend_resize import (
+from src.sparse_autoencoder.activation_store.utils.extend_resize import (
     resize_to_single_item_dimension,
 )
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     InputOutputActivationVector,
     SourceModelActivations,
@@ -220,9 +220,9 @@ class TensorActivationStore(ActivationStore):
 
             raise StoreFullError
 
-        self._data[self.items_stored : self.items_stored + num_activation_tensors] = reshaped.to(
-            self._data.device
-        )
+        self._data[
+            self.items_stored : self.items_stored + num_activation_tensors
+        ] = reshaped.to(self._data.device)
         self.items_stored += num_activation_tensors
 
     def empty(self) -> None:

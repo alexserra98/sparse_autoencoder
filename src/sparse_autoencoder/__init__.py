@@ -1,12 +1,12 @@
 """Sparse Autoencoder Library."""
-from sparse_autoencoder.activation_store import (
+from src.sparse_autoencoder.activation_store import (
     ActivationStore,
     DiskActivationStore,
     ListActivationStore,
     TensorActivationStore,
 )
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.loss import (
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.loss import (
     AbstractLoss,
     LearnedActivationsL1Loss,
     LossLogType,
@@ -14,7 +14,7 @@ from sparse_autoencoder.loss import (
     LossReductionType,
     MSEReconstructionLoss,
 )
-from sparse_autoencoder.train.pipeline import pipeline
+from src.sparse_autoencoder.train.pipeline import pipeline
 
 
 __all__ = [

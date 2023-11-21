@@ -10,8 +10,10 @@ from torch.nn.parameter import Parameter
 from torch.optim import Adam
 from torch.optim.optimizer import params_t
 
-from sparse_autoencoder.optimizer.abstract_optimizer import AbstractOptimizerWithReset
-from sparse_autoencoder.tensor_types import DeadNeuronIndices
+from src.sparse_autoencoder.optimizer.abstract_optimizer import (
+    AbstractOptimizerWithReset,
+)
+from src.sparse_autoencoder.tensor_types import DeadNeuronIndices
 
 
 @final
@@ -55,7 +57,7 @@ class AdamWithReset(Adam, AbstractOptimizerWithReset):
 
         Example:
             >>> import torch
-            >>> from sparse_autoencoder.autoencoder.model import SparseAutoencoder
+            >>> from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
             >>> model = SparseAutoencoder(5, 10, torch.zeros(5))
             >>> optimizer = AdamWithReset(
             ...     model.parameters(),
@@ -151,7 +153,7 @@ class AdamWithReset(Adam, AbstractOptimizerWithReset):
 
         Example:
             >>> import torch
-            >>> from sparse_autoencoder.autoencoder.model import SparseAutoencoder
+            >>> from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
             >>> model = SparseAutoencoder(5, 10, torch.zeros(5))
             >>> optimizer = AdamWithReset(
             ...     model.parameters(),

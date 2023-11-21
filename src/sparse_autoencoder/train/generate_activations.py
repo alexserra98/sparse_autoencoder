@@ -6,15 +6,17 @@ from typing import TYPE_CHECKING
 import torch
 from transformer_lens import HookedTransformer
 
-from sparse_autoencoder.activation_store.base_store import (
+from src.sparse_autoencoder.activation_store.base_store import (
     ActivationStore,
 )
-from sparse_autoencoder.source_data.abstract_dataset import TorchTokenizedPrompts
-from sparse_autoencoder.src_model.store_activations_hook import store_activations_hook
+from src.sparse_autoencoder.source_data.abstract_dataset import TorchTokenizedPrompts
+from src.sparse_autoencoder.src_model.store_activations_hook import (
+    store_activations_hook,
+)
 
 
 if TYPE_CHECKING:
-    from sparse_autoencoder.tensor_types import BatchTokenizedPrompts
+    from src.sparse_autoencoder.tensor_types import BatchTokenizedPrompts
 
 
 def generate_activations(

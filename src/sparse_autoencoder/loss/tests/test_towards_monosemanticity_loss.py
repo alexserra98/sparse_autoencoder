@@ -1,9 +1,9 @@
 """Test the loss function from the Towards Monosemanticity paper."""
 import torch
 
-from sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
-from sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
-from sparse_autoencoder.loss.reducer import LossReducer
+from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+from src.sparse_autoencoder.loss.reducer import LossReducer
 
 
 class TestTowardsMonosemanticityLoss:

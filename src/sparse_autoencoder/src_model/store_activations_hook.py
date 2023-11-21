@@ -1,8 +1,8 @@
 """TransformerLens Hook for storing activations."""
 from transformer_lens.hook_points import HookPoint
 
-from sparse_autoencoder.activation_store.base_store import ActivationStore
-from sparse_autoencoder.tensor_types import SourceModelActivations
+from src.sparse_autoencoder.activation_store.base_store import ActivationStore
+from src.sparse_autoencoder.tensor_types import SourceModelActivations
 
 
 def store_activations_hook(
@@ -19,7 +19,7 @@ def store_activations_hook(
 
     >>> from functools import partial
     >>> from transformer_lens import HookedTransformer
-    >>> from sparse_autoencoder.activation_store.list_store import ListActivationStore
+    >>> from src.sparse_autoencoder.activation_store.list_store import ListActivationStore
     >>> store = ListActivationStore()
     >>> model = HookedTransformer.from_pretrained("tiny-stories-1M")
     Loaded pretrained model tiny-stories-1M into HookedTransformer

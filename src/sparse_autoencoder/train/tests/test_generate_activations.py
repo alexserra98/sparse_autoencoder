@@ -4,9 +4,9 @@ import pytest
 from torch.utils.data import DataLoader
 from transformer_lens import HookedTransformer
 
-from sparse_autoencoder.activation_store.list_store import ListActivationStore
-from sparse_autoencoder.source_data.random_int import RandomIntDummyDataset
-from sparse_autoencoder.train.generate_activations import generate_activations
+from src.sparse_autoencoder.activation_store.list_store import ListActivationStore
+from src.sparse_autoencoder.source_data.random_int import RandomIntDummyDataset
+from src.sparse_autoencoder.train.generate_activations import generate_activations
 
 
 @pytest.mark.skip(reason="We're changing the approach")

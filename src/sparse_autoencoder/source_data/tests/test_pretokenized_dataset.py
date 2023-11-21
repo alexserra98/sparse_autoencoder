@@ -1,7 +1,7 @@
 """Tests for General Pre-Tokenized Dataset."""
 import pytest
 
-from sparse_autoencoder.source_data.pretokenized_dataset import PreTokenizedDataset
+from src.sparse_autoencoder.source_data.pretokenized_dataset import PreTokenizedDataset
 
 
 TEST_DATASET = "NeelNanda/c4-tokenized-2b"

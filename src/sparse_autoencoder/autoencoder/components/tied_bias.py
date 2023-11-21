@@ -3,7 +3,7 @@ from enum import Enum
 
 from torch.nn import Module
 
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     InputOutputActivationVector,
 )

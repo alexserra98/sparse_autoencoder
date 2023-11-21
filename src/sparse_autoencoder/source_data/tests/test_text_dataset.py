@@ -2,7 +2,7 @@
 import pytest
 from transformers import PreTrainedTokenizerFast
 
-from sparse_autoencoder.source_data.text_dataset import GenericTextDataset
+from src.sparse_autoencoder.source_data.text_dataset import GenericTextDataset
 
 
 @pytest.mark.parametrize("context_size", [50, 250])

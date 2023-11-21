@@ -6,7 +6,10 @@ from numpy.typing import NDArray
 import torch
 import wandb
 
-from sparse_autoencoder.tensor_types import LearnedActivationBatch, TrainBatchStatistic
+from src.src.sparse_autoencoder.tensor_types import (
+    LearnedActivationBatch,
+    TrainBatchStatistic,
+)
 
 
 def calc_capacities(features: LearnedActivationBatch) -> TrainBatchStatistic:
@@ -36,7 +39,9 @@ def calc_capacities(features: LearnedActivationBatch) -> TrainBatchStatistic:
     """
     squared_dot_products = (
         einops.einsum(
-            features, features, "n_feats1 feat_dim, n_feats2 feat_dim -> n_feats1 n_feats2"
+            features,
+            features,
+            "n_feats1 feat_dim, n_feats2 feat_dim -> n_feats1 n_feats2",
         )
         ** 2
     )

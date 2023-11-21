@@ -8,7 +8,7 @@ from typing import TypedDict, final
 from torch.utils.data import DataLoader, Dataset
 from transformers import PreTrainedTokenizerFast
 
-from sparse_autoencoder.source_data.abstract_dataset import (
+from src.sparse_autoencoder.source_data.abstract_dataset import (
     SourceDataset,
     TokenizedPrompts,
     TorchTokenizedPrompts,

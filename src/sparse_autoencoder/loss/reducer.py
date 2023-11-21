@@ -6,8 +6,8 @@ from jaxtyping import Float
 import torch
 from torch import Tensor
 
-from sparse_autoencoder.loss.abstract_loss import AbstractLoss
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.loss.abstract_loss import AbstractLoss
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationBatch,
     ItemTensor,
     LearnedActivationBatch,
@@ -22,8 +22,8 @@ class LossReducer(AbstractLoss):
     nn.Sequential.
 
     Example:
-        >>> from sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
-        >>> from sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+        >>> from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+        >>> from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
         >>> LossReducer(
         ...     MSEReconstructionLoss(),
         ...     LearnedActivationsL1Loss(0.001),
@@ -78,7 +78,9 @@ class LossReducer(AbstractLoss):
         """
         all_modules_loss: Float[Tensor, "module train_batch"] = torch.stack(
             [
-                loss_module.forward(source_activations, learned_activations, decoded_activations)
+                loss_module.forward(
+                    source_activations, learned_activations, decoded_activations
+                )
                 for loss_module in self._modules.values()
             ]
         )

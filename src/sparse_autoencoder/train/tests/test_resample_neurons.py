@@ -5,15 +5,15 @@ import pytest
 import torch
 from torch import Tensor
 
-from sparse_autoencoder.activation_store.base_store import ActivationStore
-from sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.activation_store.base_store import ActivationStore
+from src.sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.tensor_types import (
     AliveEncoderWeights,
     NeuronActivity,
     SampledDeadNeuronInputs,
 )
-from sparse_autoencoder.train.resample_neurons import (
+from src.sparse_autoencoder.train.resample_neurons import (
     assign_sampling_probabilities,
     compute_loss_and_get_activations,
     get_dead_neuron_indices,
@@ -21,7 +21,7 @@ from sparse_autoencoder.train.resample_neurons import (
     resample_dead_neurons,
     sample_input,
 )
-from sparse_autoencoder.train.sweep_config import SweepParametersRuntime
+from src.sparse_autoencoder.train.sweep_config import SweepParametersRuntime
 
 
 DEFAULT_N_ITEMS: int = 100
@@ -60,7 +60,9 @@ def sweep_parameters_fixture() -> SweepParametersRuntime:
 
 
 @pytest.fixture()
-def autoencoder_model_fixture(n_input_neurons: int = DEFAULT_N_INPUT_NEURONS) -> SparseAutoencoder:
+def autoencoder_model_fixture(
+    n_input_neurons: int = DEFAULT_N_INPUT_NEURONS
+) -> SparseAutoencoder:
     """Create a dummy autoencoder model."""
     return SparseAutoencoder(
         n_input_neurons,
@@ -86,7 +88,9 @@ class TestGetDeadNeuronIndices:
     ) -> None:
         """Test the dead neuron indices match manually created examples."""
         res = get_dead_neuron_indices(neuron_activity, threshold)
-        assert torch.equal(res, expected_indices), f"Expected {expected_indices}, got {res}"
+        assert torch.equal(
+            res, expected_indices
+        ), f"Expected {expected_indices}, got {res}"
 
 
 class TestComputeLossAndGetActivations:
@@ -179,7 +183,9 @@ class TestSampleInput:
 
             results[int(sampled_activation_idx)] += 1
 
-        resulting_probabilities = torch.tensor([item / sum(results) for item in results])
+        resulting_probabilities = torch.tensor(
+            [item / sum(results) for item in results]
+        )
 
         assert torch.allclose(
             resulting_probabilities, probabilities, atol=1e-2
@@ -227,7 +233,9 @@ class TestRenormalizeAndScale:
                 alive_neurons_count += 1
 
         # Calculate the average norm for alive neurons
-        average_alive_norm = total_norm / alive_neurons_count if alive_neurons_count > 0 else 0
+        average_alive_norm = (
+            total_norm / alive_neurons_count if alive_neurons_count > 0 else 0
+        )
 
         # Renormalize the input vector
         renormalized_input = torch.nn.functional.normalize(sampled_input, dim=-1)
@@ -241,13 +249,17 @@ class TestRenormalizeAndScale:
         neuron_activity = torch.tensor([1, 0, 1, 0, 1, 1])
         encoder_weight = torch.ones((6, 2))
 
-        rescaled_input = renormalize_and_scale(sampled_input, neuron_activity, encoder_weight)
+        rescaled_input = renormalize_and_scale(
+            sampled_input, neuron_activity, encoder_weight
+        )
 
         expected_output = self.calculate_expected_output(
             sampled_input, neuron_activity, encoder_weight
         )
 
-        assert torch.allclose(rescaled_input, expected_output), "Basic renormalization failed"
+        assert torch.allclose(
+            rescaled_input, expected_output
+        ), "Basic renormalization failed"
 
     def test_all_alive_neurons(self) -> None:
         """Test behavior when all neurons are alive."""
@@ -255,7 +267,9 @@ class TestRenormalizeAndScale:
         neuron_activity = torch.tensor([1, 4, 1, 3, 1, 1])
         encoder_weight = torch.ones((6, 2))
 
-        rescaled_input = renormalize_and_scale(sampled_input, neuron_activity, encoder_weight)
+        rescaled_input = renormalize_and_scale(
+            sampled_input, neuron_activity, encoder_weight
+        )
 
         assert rescaled_input.shape == (0, 2), "Should return an empty tensor"
 

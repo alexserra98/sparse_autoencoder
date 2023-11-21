@@ -8,13 +8,13 @@ from threading import Lock
 
 import torch
 
-from sparse_autoencoder.activation_store.base_store import (
+from src.sparse_autoencoder.activation_store.base_store import (
     ActivationStore,
 )
-from sparse_autoencoder.activation_store.utils.extend_resize import (
+from src.sparse_autoencoder.activation_store.utils.extend_resize import (
     resize_to_list_vectors,
 )
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.tensor_types import (
     InputOutputActivationVector,
     SourceModelActivations,
 )

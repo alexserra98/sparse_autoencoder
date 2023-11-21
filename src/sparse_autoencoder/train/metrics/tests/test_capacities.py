@@ -6,8 +6,14 @@ import pytest
 from syrupy.session import SnapshotSession
 import torch
 
-from sparse_autoencoder.tensor_types import LearnedActivationBatch, TrainBatchStatistic
-from sparse_autoencoder.train.metrics.capacity import calc_capacities, wandb_capacities_histogram
+from src.src.sparse_autoencoder.tensor_types import (
+    LearnedActivationBatch,
+    TrainBatchStatistic,
+)
+from src.sparse_autoencoder.train.metrics.capacity import (
+    calc_capacities,
+    wandb_capacities_histogram,
+)
 
 
 @pytest.mark.parametrize(
@@ -23,7 +29,11 @@ from sparse_autoencoder.train.metrics.capacity import calc_capacities, wandb_cap
         ),
         (
             torch.tensor(
-                [[1.0, 0.0, 0], [1 / math.sqrt(2), 1 / math.sqrt(2), 0.0], [0.0, 0.0, 1.0]]
+                [
+                    [1.0, 0.0, 0],
+                    [1 / math.sqrt(2), 1 / math.sqrt(2), 0.0],
+                    [0.0, 0.0, 1.0],
+                ]
             ),
             torch.tensor([2 / 3, 2 / 3, 1.0]),
         ),

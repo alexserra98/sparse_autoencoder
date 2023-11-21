@@ -2,8 +2,8 @@
 import pytest
 import torch
 
-from sparse_autoencoder.autoencoder.model import SparseAutoencoder
-from sparse_autoencoder.optimizer.adam_with_reset import AdamWithReset
+from src.sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from src.sparse_autoencoder.optimizer.adam_with_reset import AdamWithReset
 
 
 @pytest.fixture()
@@ -28,7 +28,9 @@ def model_and_optimizer() -> tuple[torch.nn.Module, AdamWithReset]:
     return model, optimizer
 
 
-def test_initialization(model_and_optimizer: tuple[torch.nn.Module, AdamWithReset]) -> None:
+def test_initialization(
+    model_and_optimizer: tuple[torch.nn.Module, AdamWithReset]
+) -> None:
     """Test initialization of AdamWithReset optimizer."""
     model, optimizer = model_and_optimizer
     assert len(optimizer.parameter_names) == len(list(model.named_parameters()))
@@ -52,7 +54,9 @@ def test_reset_state_all_parameters(
                     assert torch.all(state == 0)
 
 
-def test_reset_neurons_state(model_and_optimizer: tuple[torch.nn.Module, AdamWithReset]) -> None:
+def test_reset_neurons_state(
+    model_and_optimizer: tuple[torch.nn.Module, AdamWithReset]
+) -> None:
     """Test reset_neurons_state method."""
     model, optimizer = model_and_optimizer
 

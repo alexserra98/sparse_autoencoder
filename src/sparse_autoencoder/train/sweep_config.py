@@ -2,7 +2,7 @@
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from sparse_autoencoder.train.utils.wandb_sweep_types import (
+from src.sparse_autoencoder.train.utils.wandb_sweep_types import (
     Method,
     Metric,
     Parameter,

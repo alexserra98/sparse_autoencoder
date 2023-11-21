@@ -7,7 +7,7 @@ from torch import Tensor
 from torch.nn import Module, init
 from torch.nn.parameter import Parameter
 
-from sparse_autoencoder.tensor_types import (
+from src.sparse_autoencoder.tensor_types import (
     Axis,
     DecoderWeights,
     EncoderWeights,
