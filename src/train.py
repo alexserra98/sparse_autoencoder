@@ -1,25 +1,35 @@
 from ast import Tuple
 import stat
+from tabnanny import check
+import os
+from pathlib import Path
 
 import wandb
-from src.sparse_autoencoder import SparseAutoencoder, pipeline
+
 from transformers import PreTrainedTokenizerBase
 
 from abc import ABC, abstractmethod, abstractproperty
 from transformer_lens import HookedTransformer
 from dataclasses import dataclass
 import argparse
-from src.sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
 from torch import device
-from src.sparse_autoencoder.source_data.text_dataset import GenericTextDataset
-from src.sparse_autoencoder.train.sweep_config import SweepParametersRuntime
 import torch
+
+
+from src.sparse_autoencoder import SparseAutoencoder
+from src.sparse_autoencoder.activation_resampler import ActivationResampler
+from src.sparse_autoencoder.loss.learned_activations_l1 import LearnedActivationsL1Loss
+from src.sparse_autoencoder.loss.mse_reconstruction_loss import MSEReconstructionLoss
+from src.sparse_autoencoder.loss.reducer import LossReducer
+from src.sparse_autoencoder.optimizer.adam_with_reset import AdamWithReset
+from src.sparse_autoencoder.source_data.text_dataset import GenericTextDataset
+from src.sparse_autoencoder.train.pipeline import Pipeline
 
 @dataclass
 class Config:
     model_name:str
     device:device
-    expansion_ratio:int = 4
+    expansion_factor:int = 4
 
 @dataclass
 class DataConfig:
@@ -31,7 +41,8 @@ class DataConfig:
 class TrainerConfig:
     lr:float = 1e-3
     l1_coefficient:float = 1e-3 #Large lead to sparsity
-    batch_size:int = 4096
+    train_batch_size:int = 4096
+
     
     # Adam standard (better do not change)
     adam_beta_1:float = 0.9
@@ -191,10 +202,9 @@ class Trainer:
         """
         self.autoencoder = SparseAutoencoder(
             n_input_features=activation.dimensionality,
-            n_learned_features=activation.dimensionality * self.config.expansion_ratio,
+            n_learned_features=activation.dimensionality * self.config.expansion_factor,
             geometric_median_dataset= torch.zeros(activation.dimensionality),
-            device=self.config.device,
-        )
+        ).to(self.config.device)
     
     def run_pipeline(self, activation:Activation):
         """
@@ -204,18 +214,18 @@ class Trainer:
         # this is a bit ugly, maybe we can do better with the activation class (We need now just the name of the hook)
         # TODO: Implement the pipeline
         activation.set_dimensionality(self.model)
-        store = TensorActivationStore(self.data_config.max_items, activation.dimensionality, self.config.device)
+        # store = TensorActivationStore(self.data_config.max_items, activation.dimensionality, self.config.device)
         
-        # set training hyperparameters
-        trainig_hyperparameters = SweepParametersRuntime(
-            lr=self.trainer_config.lr,
-            l1_coefficient=self.trainer_config.l1_coefficient,
-            batch_size=self.trainer_config.batch_size,
-            adam_beta_1=self.trainer_config.adam_beta_1,
-            adam_beta_2=self.trainer_config.adam_beta_2,
-            adam_epsilon=self.trainer_config.adam_epsilon,
-            adam_weight_decay=self.trainer_config.adam_weight_decay,
-        )
+        # # set training hyperparameters
+        # trainig_hyperparameters = SweepParametersRuntime(
+        #     lr=self.trainer_config.lr,
+        #     l1_coefficient=self.trainer_config.l1_coefficient,
+        #     batch_size=self.trainer_config.train_batch_size,
+        #     adam_beta_1=self.trainer_config.adam_beta_1,
+        #     adam_beta_2=self.trainer_config.adam_beta_2,
+        #     adam_epsilon=self.trainer_config.adam_epsilon,
+        #     adam_weight_decay=self.trainer_config.adam_weight_decay,
+        # )
         
         # add in a dict all the config
         config_dict = [config.__dict__ for config in [self.config, self.data_config, self.trainer_config]]
@@ -228,16 +238,61 @@ class Trainer:
         # init the autoencoder
         self.init_autoencoder(activation)
         
-        # run the pipeline
-        pipeline(
-            src_model=self.model,
-            src_model_activation_hook_point=activation.activation_name,
-            src_model_activation_layer=activation.layer,
-            source_dataset=self.source_data,
-            activation_store=store,
-            num_activations_before_training=self.data_config.max_items,
-            autoencoder=self.autoencoder,
-            device=self.config.device,
-            max_activations=self.data_config.max_items,
-            sweep_parameters=trainig_hyperparameters,
+        loss = LossReducer(
+            LearnedActivationsL1Loss(
+            l1_coefficient=self.trainer_config.l1_coefficient,
+        ),
+            MSEReconstructionLoss(),
         )
+        optimizer = AdamWithReset(
+            params=self.autoencoder.parameters(),
+            named_parameters=self.autoencoder.named_parameters(),
+            lr=self.trainer_config.lr,
+            betas=(self.trainer_config.adam_beta_1, self.trainer_config.adam_beta_2),
+            eps=self.trainer_config.adam_epsilon,
+            weight_decay=self.trainer_config.adam_weight_decay,
+        )
+        activation_resampler = ActivationResampler()
+        
+        wandb.init(
+            project="sparse-autoencoder",
+            dir=".cache",
+            config=config_dict,
+        )
+        checkpoint_path = Path("../../.checkpoint") #!todo put in config
+        
+        
+        pipeline = Pipeline(
+            cache_name=activation.activation_name,
+            layer=activation.layer,
+            source_model=self.model,
+            autoencoder=self.autoencoder,
+            source_dataset=self.source_data,
+            optimizer=optimizer,
+            loss=loss,
+            activation_resampler=activation_resampler,
+            source_data_batch_size=8,
+            checkpoint_directory=checkpoint_path
+        )
+        
+        pipeline.run_pipeline(
+            train_batch_size=int(self.trainer_config.train_batch_size),
+            max_store_size=100000,
+            max_activations=10000000,
+            resample_frequency=100000,
+            checkpoint_frequency=100000, #!todo put in config
+        )
+        
+        # # run the pipeline
+        # pipeline(
+        #     src_model=self.model,
+        #     src_model_activation_hook_point=activation.activation_name,
+        #     src_model_activation_layer=activation.layer,
+        #     source_dataset=self.source_data,
+        #     activation_store=store,
+        #     num_activations_before_training=self.data_config.max_items,
+        #     autoencoder=self.autoencoder,
+        #     device=self.config.device,
+        #     max_activations=self.data_config.max_items,
+        #     sweep_parameters=trainig_hyperparameters,
+        # )

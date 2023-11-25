@@ -55,7 +55,6 @@ class AbstractLoss(Module, ABC):
         Returns:
             Loss per batch item.
         """
-        raise NotImplementedError
 
     @final
     def batch_scalar_loss(
@@ -78,7 +77,9 @@ class AbstractLoss(Module, ABC):
         Returns:
             Loss for the batch.
         """
-        itemwise_loss = self.forward(source_activations, learned_activations, decoded_activations)
+        itemwise_loss = self.forward(
+            source_activations, learned_activations, decoded_activations
+        )
 
         match reduction:
             case LossReductionType.MEAN:

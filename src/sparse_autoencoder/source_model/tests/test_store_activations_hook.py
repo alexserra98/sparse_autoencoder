@@ -5,7 +5,7 @@ import torch
 from transformer_lens import HookedTransformer
 
 from src.sparse_autoencoder.activation_store.list_store import ListActivationStore
-from src.sparse_autoencoder.src_model.store_activations_hook import (
+from src.sparse_autoencoder.source_model.store_activations_hook import (
     store_activations_hook,
 )
 from src.sparse_autoencoder.tensor_types import BatchTokenizedPrompts

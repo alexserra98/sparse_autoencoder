@@ -2,11 +2,11 @@
 import pytest
 import torch
 
-from sparse_autoencoder.activation_store.utils.extend_resize import (
+from src.sparse_autoencoder.activation_store.utils.extend_resize import (
     resize_to_list_vectors,
     resize_to_single_item_dimension,
 )
-from sparse_autoencoder.tensor_types import InputOutputActivationBatch
+from src.sparse_autoencoder.tensor_types import InputOutputActivationBatch
 
 
 class TestResizeListVectors:
@@ -70,7 +70,9 @@ class TestResizeSingleItemDimension:
     ) -> None:
         """Check the resulting tensor shape."""
         input_tensor = torch.randn(input_shape)
-        result = resize_to_single_item_dimension(InputOutputActivationBatch(input_tensor))
+        result = resize_to_single_item_dimension(
+            InputOutputActivationBatch(input_tensor)
+        )
 
         assert result.shape == expected_shape, f"Expected tensor shape {expected_shape}"
 
@@ -78,7 +80,9 @@ class TestResizeSingleItemDimension:
         """Check the resulting tensor values."""
         input_tensor = torch.tensor([[[1.0, 2], [3, 4]], [[5, 6], [7, 8]]])
         expected_output = torch.tensor([[1.0, 2], [3, 4], [5, 6], [7, 8]])
-        result = resize_to_single_item_dimension(InputOutputActivationBatch(input_tensor))
+        result = resize_to_single_item_dimension(
+            InputOutputActivationBatch(input_tensor)
+        )
 
         assert torch.all(
             torch.eq(expected_output, result),

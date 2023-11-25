@@ -6,7 +6,10 @@ from typing import final
 import torch
 from torch.utils.data import Dataset
 
-from src.sparse_autoencoder.tensor_types import InputOutputActivationBatch, InputOutputActivationVector
+from src.sparse_autoencoder.tensor_types import (
+    InputOutputActivationBatch,
+    InputOutputActivationVector,
+)
 
 
 class ActivationStore(Dataset[InputOutputActivationVector], ABC):
@@ -51,27 +54,22 @@ class ActivationStore(Dataset[InputOutputActivationVector], ABC):
     @abstractmethod
     def append(self, item: InputOutputActivationVector) -> Future | None:
         """Add a Single Item to the Store."""
-        raise NotImplementedError
 
     @abstractmethod
     def extend(self, batch: InputOutputActivationBatch) -> Future | None:
         """Add a Batch to the Store."""
-        raise NotImplementedError
 
     @abstractmethod
     def empty(self) -> None:
         """Empty the Store."""
-        raise NotImplementedError
 
     @abstractmethod
     def __len__(self) -> int:
         """Get the Length of the Store."""
-        raise NotImplementedError
 
     @abstractmethod
     def __getitem__(self, index: int) -> InputOutputActivationVector:
         """Get an Item from the Store."""
-        raise NotImplementedError
 
     def shuffle(self) -> None:
         """Optional shuffle method."""
@@ -89,7 +87,7 @@ class ActivationStore(Dataset[InputOutputActivationVector], ABC):
             requires inspecting the data itself.
 
         Example:
-            >>> from sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
+            >>> from src.sparse_autoencoder.activation_store.tensor_store import TensorActivationStore
             >>> store = TensorActivationStore(max_items=16*16, num_neurons=256)
             >>> store.fill_with_test_data()
             >>> len(store)
