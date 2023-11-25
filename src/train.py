@@ -49,7 +49,7 @@ class Parser:
         self.default_ = {
             "model": "gpt2",
             "device": "cuda",
-            "dataset": "wikitext-2",
+            "dataset": "monology/pile-uncopyrighted",
             "max_items": 1000,
             "total_training_tokens": 1000000,
         }
@@ -218,12 +218,12 @@ class Trainer:
         )
         
         # add in a dict all the config
-        config_dict = [config.__dit__ for config in [self.config, self.data_config, self.trainer_config]]
+        config_dict = [config.__dict__ for config in [self.config, self.data_config, self.trainer_config]]
         #merge all the config in a single dict
         config_dict = {k: v for d in config_dict for k, v in d.items()}
         
         # init wandb
-        wandb.init(project="sparse-autoencoder", config=config_dict)
+        #wandb.init(project="sparse-autoencoder", config=config_dict)
         
         # init the autoencoder
         self.init_autoencoder(activation)
